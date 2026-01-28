@@ -8,13 +8,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Logo } from "../logo";
 import { LifeBuoy, LogOut, Settings, User } from "lucide-react";
 
 export function Header() {
   return (
-    <header className="sticky top-0 flex h-16 items-center gap-4 border-b text-accent-foreground px-4 md:px-6 z-50">
+    <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-accent text-accent-foreground px-4 md:px-6 z-50">
       <Link href="/dashboard" className="flex items-center gap-2 font-semibold">
         <Logo className="h-6 w-6 text-primary" />
         <span className="text-lg font-bold font-headline">Guardian Gate</span>
@@ -24,7 +24,6 @@ export function Header() {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="rounded-full">
               <Avatar className="h-8 w-8">
-                <AvatarImage src="https://picsum.photos/seed/user-avatar/40/40" data-ai-hint="user avatar" />
                 <AvatarFallback>GG</AvatarFallback>
               </Avatar>
               <span className="sr-only">Toggle user menu</span>
