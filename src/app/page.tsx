@@ -6,7 +6,7 @@ import { OnetimeCompute } from "@/components/onetime-compute";
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="p-4 flex justify-between items-center border-b-2 bg-card">
+      <header className="p-4 flex justify-between items-center border-b-2 bg-accent text-accent-foreground">
         <div className="flex items-center gap-2">
           <Logo className="h-8 w-8 text-primary" />
           <span className="text-xl font-bold font-headline">Guardian Gate</span>
