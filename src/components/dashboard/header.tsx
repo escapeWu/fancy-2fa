@@ -14,23 +14,23 @@ import { LifeBuoy, LogOut, Settings, User } from "lucide-react";
 
 export function Header() {
   return (
-    <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-card px-4 md:px-6 z-50">
+    <header className="sticky top-0 flex h-16 items-center gap-4 border-b-2 bg-card px-4 md:px-6 z-50">
       <Link href="/dashboard" className="flex items-center gap-2 font-semibold">
         <Logo className="h-6 w-6 text-primary" />
-        <span className="text-lg font-bold">Guardian Gate</span>
+        <span className="text-lg font-bold font-headline">Guardian Gate</span>
       </Link>
       <div className="ml-auto flex items-center gap-4">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="rounded-full">
-              <Avatar>
+            <Button variant="ghost" size="icon" className="rounded-full border-2">
+              <Avatar className="h-8 w-8">
                 <AvatarImage src="https://picsum.photos/seed/user-avatar/40/40" data-ai-hint="user avatar" />
                 <AvatarFallback>GG</AvatarFallback>
               </Avatar>
               <span className="sr-only">Toggle user menu</span>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align="end" className="border-2 shadow-hard">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>

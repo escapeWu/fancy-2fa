@@ -10,9 +10,13 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        body: ['Roboto', 'sans-serif'],
-        headline: ['Roboto', 'sans-serif'],
-        code: ['monospace'],
+        body: ['"IBM Plex Mono"', 'monospace'],
+        headline: ['"Zilla Slab"', 'serif'],
+        code: ['"IBM Plex Mono"', 'monospace'],
+      },
+      boxShadow: {
+        hard: '4px 4px 0px 0px hsl(var(--border))',
+        'hard-sm': '2px 2px 0px 0px hsl(var(--border))',
       },
       colors: {
         background: 'hsl(var(--background))',
