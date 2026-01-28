@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/logo";
 import Link from "next/link";
-import { Shield } from "lucide-react";
+import { OnetimeCompute } from "@/components/onetime-compute";
 
 export default function Home() {
   return (
@@ -12,27 +12,14 @@ export default function Home() {
           <span className="text-xl font-bold font-headline">Guardian Gate</span>
         </div>
         <Button asChild variant="secondary" size="sm">
-          <Link href="/login">Login</Link>
+          <Link href="/login">Login / Sign Up</Link>
         </Button>
       </header>
-      <main className="flex-1 flex flex-col items-center justify-center text-center p-4">
-        <div className="max-w-2xl">
-          <Shield className="h-20 w-20 mx-auto text-primary mb-6" />
-          <h1 className="text-5xl md:text-7xl font-bold font-headline tracking-tighter">
-            Stop. Who goes there?
-          </h1>
-          <p className="mt-6 text-lg max-w-xl mx-auto">
-            This is Guardian Gate. The one and only. The final frontier of your digital identity. Add a layer of security that's as stylish as it is strong.
-          </p>
-          <div className="mt-8">
-            <Button asChild size="lg" className="rounded-full px-10">
-              <Link href="/login">Enter the Gate</Link>
-            </Button>
-          </div>
-        </div>
+      <main className="flex-1">
+        <OnetimeCompute />
       </main>
       <footer className="p-4 text-center text-muted-foreground text-xs">
-        © {new Date().getFullYear()} Guardian Gate. NO Rights Reserved.
+        © {new Date().getFullYear()} Guardian Gate. All wrongs reserved.
       </footer>
     </div>
   );
