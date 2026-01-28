@@ -10,17 +10,19 @@ export type Account = {
   id: string;
   name: string;
   issuer: string;
+  secretKey: string;
 };
 
 export default function DashboardPage() {
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const handleAddAccount = (name: string, issuer: string) => {
+  const handleAddAccount = (name: string, issuer: string, secretKey: string) => {
     const newAccount: Account = {
       id: new Date().toISOString(),
       name,
       issuer,
+      secretKey,
     };
     setAccounts((prev) => [...prev, newAccount]);
   };

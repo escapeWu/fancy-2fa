@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -13,12 +13,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { RecoveryCodes } from "./recovery-codes";
 
 type Setup2faDialogProps = {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  onSuccess: (name: string, issuer: string) => void;
+  onSuccess: (name: string, issuer: string, secretKey: string) => void;
 };
 
 export function Setup2faDialog({
@@ -26,100 +25,75 @@ export function Setup2faDialog({
   setIsOpen,
   onSuccess,
 }: Setup2faDialogProps) {
-  const [step, setStep] = useState(1);
   const [accountName, setAccountName] = useState("");
   const [issuerName, setIssuerName] = useState("");
+  const [secretKey, setSecretKey] = useState("");
   const { toast } = useToast();
 
-  const secretKey = "ABCD EFGH IJKL MNOP QRST UVWX"; // Placeholder
-
-  const handleNext = () => {
-    if (step === 1) {
-      if (!accountName || !issuerName) {
-        toast({
-            variant: "destructive",
-            title: "Missing Information",
-            description: "Please enter both an account and issuer name.",
-        });
-        return;
-      }
-      toast({
-          title: "Account Ready",
-          description: `2FA is ready for ${issuerName}. Save your recovery codes.`,
-      });
-      setStep(2); // Move to recovery codes
-    }
-  };
-  
-  const handleClose = () => {
-    setIsOpen(false);
-    setTimeout(() => {
-        setStep(1);
+  useEffect(() => {
+    if (!isOpen) {
+      const timer = setTimeout(() => {
         setAccountName("");
         setIssuerName("");
-    }, 300);
-  }
-  
-  const handleFinish = () => {
-    onSuccess(accountName, issuerName);
-    handleClose();
-  }
+        setSecretKey("");
+      }, 300); // Delay to allow exit animation
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen]);
 
+
+  const handleNext = () => {
+    if (!accountName || !issuerName || !secretKey) {
+      toast({
+          variant: "destructive",
+          title: "Missing Information",
+          description: "Please fill out all fields.",
+      });
+      return;
+    }
+    onSuccess(accountName, issuerName, secretKey);
+    toast({
+        title: "Account Added",
+        description: `The account for ${issuerName} was added.`,
+    });
+    setIsOpen(false);
+  };
+  
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className="sm:max-w-md">
-        {step === 1 && (
-          <>
-            <DialogHeader>
-              <DialogTitle>Enable Two-Factor Authentication</DialogTitle>
-              <DialogDescription>
-                Enter account details and the secret key in your authenticator app.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4 py-4">
-              <div className="space-y-4">
-                  <div className="space-y-2">
-                      <Label htmlFor="issuer-name">Issuer</Label>
-                      <Input id="issuer-name" placeholder="e.g., Google" value={issuerName} onChange={e => setIssuerName(e.target.value)} />
-                  </div>
-                   <div className="space-y-2">
-                      <Label htmlFor="account-name">Account</Label>
-                      <Input id="account-name" placeholder="e.g., user@example.com" value={accountName} onChange={e => setAccountName(e.target.value)} />
-                  </div>
+        <DialogHeader>
+          <DialogTitle>Add 2FA Account</DialogTitle>
+          <DialogDescription>
+            Enter your account details and the secret key from your provider.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4 py-4">
+          <div className="space-y-4">
+              <div className="space-y-2">
+                  <Label htmlFor="issuer-name">Issuer</Label>
+                  <Input id="issuer-name" placeholder="e.g., Google" value={issuerName} onChange={e => setIssuerName(e.target.value)} />
               </div>
-              
-              <div className="space-y-2 pt-4 text-center">
-                <Label htmlFor="secret-key" className="text-muted-foreground">Secret Key</Label>
-                <Input
-                  id="secret-key"
-                  readOnly
-                  value={secretKey}
-                  className="font-mono tracking-wider text-center"
-                />
+                <div className="space-y-2">
+                  <Label htmlFor="account-name">Account</Label>
+                  <Input id="account-name" placeholder="e.g., user@example.com" value={accountName} onChange={e => setAccountName(e.target.value)} />
               </div>
-            </div>
-            <DialogFooter>
-              <Button type="button" variant="secondary" onClick={handleClose}>Cancel</Button>
-              <Button type="button" onClick={handleNext}>Next</Button>
-            </DialogFooter>
-          </>
-        )}
-        {step === 2 && (
-            <>
-                 <DialogHeader>
-                    <DialogTitle>Save Your Recovery Codes</DialogTitle>
-                    <DialogDescription>
-                        Store these somewhere safe. You can use them to access your account if you lose your device.
-                    </DialogDescription>
-                </DialogHeader>
-                <div className="py-4">
-                    <RecoveryCodes />
-                </div>
-                 <DialogFooter>
-                    <Button type="button" onClick={handleFinish}>Done</Button>
-                </DialogFooter>
-            </>
-        )}
+              <div className="space-y-2">
+                  <Label htmlFor="secret-key">Secret Key</Label>
+                  <Input
+                    id="secret-key"
+                    placeholder="Enter your secret key"
+                    value={secretKey}
+                    onChange={e => setSecretKey(e.target.value)}
+                    className="font-mono tracking-wider"
+                  />
+              </div>
+          </div>
+        </div>
+        <DialogFooter>
+          <Button type="button" variant="secondary" onClick={() => setIsOpen(false)}>Cancel</Button>
+          <Button type="button" onClick={handleNext}>Next</Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
