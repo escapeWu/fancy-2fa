@@ -52,6 +52,7 @@ export function OnetimeCompute() {
       id: new Date().toISOString(),
       name: secret.trim(),
       issuer: "One-Time",
+      secretKey: secret.trim(),
     };
 
     setActiveAccount(newAccount);
@@ -123,7 +124,7 @@ export function OnetimeCompute() {
       {activeAccount ? (
         <div id="code-display">
             <h2 className="text-xl font-bold font-headline mb-4">Secret Key Display Area</h2>
-            <AccountCard account={activeAccount} />
+            <AccountCard key={activeAccount.id} account={activeAccount} />
         </div>
       ) : (
         <div className="text-center py-10 border-4 border-dashed border-destructive/50 rounded-xl">
