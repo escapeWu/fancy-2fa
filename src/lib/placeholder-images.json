@@ -1,3 +1,10 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "qr-code",
+      "description": "Placeholder QR code for 2FA setup",
+      "imageUrl": "https://images.unsplash.com/photo-1600147131759-880e94a6185f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxxciUyMGNvZGV8ZW58MHx8fHwxNzY5NTMwNDY5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "qr code"
+    }
+  ]
 }
