@@ -31,7 +31,7 @@ export default function DashboardPage() {
         <h1 className="text-2xl md:text-3xl font-bold font-headline">
           Authenticator Codes
         </h1>
-        <Button onClick={() => setIsDialogOpen(true)} className="bg-primary hover:bg-primary/90">
+        <Button onClick={() => setIsDialogOpen(true)}>
           <PlusCircle className="mr-2 h-4 w-4" /> Add Account
         </Button>
       </div>

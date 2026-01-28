@@ -66,7 +66,7 @@ export function AccountCard({ account }: { account: Account }) {
       </CardHeader>
       <CardContent className="flex flex-col flex-1 justify-center items-center gap-4 text-center">
         <div className="flex-1">
-            <p className="text-4xl font-bold tracking-widest text-primary font-mono">
+            <p className="text-3xl sm:text-4xl font-bold tracking-widest text-primary font-mono">
             {code.slice(0, 3)} {code.slice(3, 6)}
             </p>
         </div>
