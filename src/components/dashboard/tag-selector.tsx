@@ -9,6 +9,16 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { Tag } from "@/lib/db/interfaces";
 import { createTag, getTags, deleteTag } from "@/lib/actions";
@@ -25,6 +35,7 @@ export function TagSelector({ selectedTags, onTagsChange, container }: TagSelect
   const [availableTags, setAvailableTags] = React.useState<Tag[]>([]);
   const [inputValue, setInputValue] = React.useState("");
   const [loading, setLoading] = React.useState(false);
+  const [tagToDelete, setTagToDelete] = React.useState<Tag | null>(null);
 
   // Fetch tags when popover opens
   React.useEffect(() => {
@@ -70,16 +81,22 @@ export function TagSelector({ selectedTags, onTagsChange, container }: TagSelect
     }
   };
 
-  const handleDeleteTag = async (e: React.MouseEvent, tagId: number) => {
+  const handleDeleteClick = (e: React.MouseEvent, tag: Tag) => {
     e.stopPropagation();
-    if (!confirm("Delete this tag? This will remove it from all accounts.")) return;
+    setTagToDelete(tag);
+  };
+
+  const confirmDeleteTag = async () => {
+    if (!tagToDelete?.id) return;
 
     try {
-      await deleteTag(tagId);
-      setAvailableTags(availableTags.filter((t) => t.id !== tagId));
-      onTagsChange(selectedTags.filter((t) => t.id !== tagId));
+      await deleteTag(tagToDelete.id);
+      setAvailableTags(availableTags.filter((t) => t.id !== tagToDelete.id));
+      onTagsChange(selectedTags.filter((t) => t.id !== tagToDelete.id));
     } catch (error) {
       console.error("Failed to delete tag", error);
+    } finally {
+      setTagToDelete(null);
     }
   };
 
@@ -145,7 +162,7 @@ export function TagSelector({ selectedTags, onTagsChange, container }: TagSelect
                              variant="ghost"
                              size="icon"
                              className="h-5 w-5 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive hover:text-destructive-foreground"
-                             onClick={(e) => tag.id && handleDeleteTag(e, tag.id)}
+                             onClick={(e) => handleDeleteClick(e, tag)}
                            >
                              <X className="h-3 w-3" />
                            </Button>
@@ -176,6 +193,24 @@ export function TagSelector({ selectedTags, onTagsChange, container }: TagSelect
              </div>
           </PopoverContent>
         </Popover>
+
+        <AlertDialog open={!!tagToDelete} onOpenChange={(open) => !open && setTagToDelete(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This will permanently delete the tag "{tagToDelete?.name}".
+                This action cannot be undone and will remove this tag from all associated accounts.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={confirmDeleteTag} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );
