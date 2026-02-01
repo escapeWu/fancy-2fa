@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -11,50 +11,86 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Lock, LogIn } from "lucide-react";
+import { Lock, Eye, EyeOff, Loader2 } from "lucide-react";
+import { login } from "@/lib/auth-actions";
+import { useState } from "react";
+import { Locale } from "@/i18n/config";
 
-export function LoginForm() {
+// We'll pass the dictionary as props or use a client-side context/hook in a real large app.
+// For simplicity, we can pass props from the parent server component.
+
+export function LoginForm({ dict, lang }: { dict: any, lang: Locale }) {
   const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
+  const [showSecretKey, setShowSecretKey] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // In a real app, you'd handle authentication here.
-    // For this demo, we'll just redirect to the dashboard.
-    router.push("/dashboard");
+    if (isLoading) return;
+
+    setError(null);
+    setIsLoading(true);
+
+    const formData = new FormData(event.currentTarget);
+    formData.append("lang", lang); // Pass language to server action
+
+    const result = await login(formData);
+
+    if (result?.error) {
+      setError(dict.login.error); // Use translated error
+      setIsLoading(false);
+    }
+    // If successful, the server action will redirect, so we don't need to set loading to false
   };
 
   return (
     <Card>
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl font-headline">Welcome Back</CardTitle>
+        <CardTitle className="text-2xl font-headline">{dict.login.title}</CardTitle>
         <CardDescription>
-          Sign in to access your secure accounts.
+          Enter your secret key to continue.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="username">Username</Label>
-            <Input
-              id="username"
-              type="text"
-              placeholder="your_username"
-              defaultValue="demo_user"
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="password">Password</Label>
-              <a href="#" className="text-sm text-primary hover:underline">
-                Forgot password?
-              </a>
+            <Label htmlFor="secretKey">{dict.login.passwordLabel}</Label>
+            <div className="relative">
+              <Input
+                id="secretKey"
+                name="secretKey"
+                type={showSecretKey ? "text" : "password"}
+                placeholder="Enter your secret key"
+                required
+                className="pr-10"
+                disabled={isLoading}
+              />
+              <button
+                type="button"
+                onClick={() => setShowSecretKey(!showSecretKey)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                disabled={isLoading}
+              >
+                {showSecretKey ? (
+                  <EyeOff className="h-4 w-4" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
+                <span className="sr-only">
+                  {showSecretKey ? "Hide secret key" : "Show secret key"}
+                </span>
+              </button>
             </div>
-            <Input id="password" type="password" defaultValue="password" required />
           </div>
-          <Button type="submit" className="w-full">
-            <LogIn />
-            Sign In
+          {error && <p className="text-sm text-red-500 text-center">{error}</p>}
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Lock className="mr-2 h-4 w-4" />
+            )}
+            {isLoading ? dict.login.loading : dict.login.submit}
           </Button>
         </form>
       </CardContent>

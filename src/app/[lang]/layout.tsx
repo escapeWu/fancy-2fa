@@ -1,23 +1,33 @@
 import type { Metadata } from "next";
 import { Toaster } from "@/components/ui/toaster";
-import "./globals.css";
+import "../globals.css";
+import { i18n, Locale } from "@/i18n/config";
 
 export const metadata: Metadata = {
   title: "Guardian Gate",
   description: "Secure your accounts with two-factor authentication.",
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-  },
 };
 
-export default function RootLayout({
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
+
+export async function generateStaticParams() {
+  return i18n.locales.map((lang) => ({ lang }));
+}
+
+export default async function RootLayout({
   children,
+  params,
 }: Readonly<{
   children: React.ReactNode;
+  params: Promise<{ lang: Locale }>;
 }>) {
+  const { lang } = await params;
+
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={lang} suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

@@ -28,9 +28,10 @@ interface TagSelectorProps {
   selectedTags: Tag[];
   onTagsChange: (tags: Tag[]) => void;
   container?: HTMLElement | null;
+  dict: any;
 }
 
-export function TagSelector({ selectedTags, onTagsChange, container }: TagSelectorProps) {
+export function TagSelector({ selectedTags, onTagsChange, container, dict }: TagSelectorProps) {
   const [open, setOpen] = React.useState(false);
   const [availableTags, setAvailableTags] = React.useState<Tag[]>([]);
   const [inputValue, setInputValue] = React.useState("");
@@ -126,7 +127,7 @@ export function TagSelector({ selectedTags, onTagsChange, container }: TagSelect
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
              <Button variant="outline" size="sm" className="h-7 border-dashed">
-              + Tags
+              {dict.dialog.tags.add}
              </Button>
           </PopoverTrigger>
           <PopoverContent
@@ -143,7 +144,7 @@ export function TagSelector({ selectedTags, onTagsChange, container }: TagSelect
                onClick={(e) => e.stopPropagation()}
              >
                 <div className="space-y-1 max-h-[200px] overflow-y-auto">
-                  {availableTags.length === 0 && <p className="text-xs text-muted-foreground p-2">No tags found.</p>}
+                  {availableTags.length === 0 && <p className="text-xs text-muted-foreground p-2">{dict.dialog.tags.noTags}</p>}
                   {availableTags.map((tag) => {
                      const isSelected = selectedTags.some((t) => t.id === tag.id);
                      return (
@@ -173,7 +174,7 @@ export function TagSelector({ selectedTags, onTagsChange, container }: TagSelect
                 </div>
                 <div className="border-t mt-2 pt-2">
                    <Input
-                     placeholder="New tag..."
+                     placeholder={dict.dialog.tags.placeholder}
                      value={inputValue}
                      onChange={(e) => setInputValue(e.target.value)}
                      onKeyDown={handleKeyDown}
@@ -187,7 +188,7 @@ export function TagSelector({ selectedTags, onTagsChange, container }: TagSelect
                       onClick={handleCreateTag}
                       disabled={!inputValue.trim() || loading}
                    >
-                     {loading ? "Creating..." : "Create +"}
+                     {loading ? dict.dialog.tags.creating : dict.dialog.tags.create}
                    </Button>
                 </div>
              </div>
@@ -197,16 +198,15 @@ export function TagSelector({ selectedTags, onTagsChange, container }: TagSelect
         <AlertDialog open={!!tagToDelete} onOpenChange={(open) => !open && setTagToDelete(null)}>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+              <AlertDialogTitle>{dict.dialog.tags.deleteTitle}</AlertDialogTitle>
               <AlertDialogDescription>
-                This will permanently delete the tag "{tagToDelete?.name}".
-                This action cannot be undone and will remove this tag from all associated accounts.
+                {dict.dialog.tags.deleteDesc.replace("{tag}", tagToDelete?.name || "")}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogCancel>{dict.dialog.tags.cancel}</AlertDialogCancel>
               <AlertDialogAction onClick={confirmDeleteTag} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                Delete
+                {dict.dialog.tags.delete}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

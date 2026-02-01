@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import {
   DropdownMenu,
@@ -9,17 +11,39 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Logo } from "../logo";
+import { Logo } from "@/components/logo";
 import { LifeBuoy, LogOut, Settings, User } from "lucide-react";
+import { logout } from "@/lib/auth-actions";
+import { useGlobalProgress } from "./global-progress";
+import { LanguageSwitcher } from "../language-switcher";
 
-export function Header() {
+// Same color calculation as the top progress bar
+function getProgressColor(p: number): string {
+  if (p > 50) {
+    const ratio = (p - 50) / 50;
+    const r = Math.round(255 * (1 - ratio));
+    const g = 200;
+    return `rgb(${r}, ${g}, 0)`;
+  } else {
+    const ratio = p / 50;
+    const r = Math.round(180 + 75 * ratio);
+    const g = Math.round(200 * ratio);
+    return `rgb(${r}, ${g}, 0)`;
+  }
+}
+
+export function Header({ dict, lang }: { dict: any; lang: string }) {
+  const { progress } = useGlobalProgress();
+
   return (
-    <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-accent text-accent-foreground px-4 md:px-6 z-50">
-      <Link href="/dashboard" className="flex items-center gap-2 font-semibold">
+    <header className="sticky top-[5px] z-40">
+      <div className="flex h-16 items-center gap-4 text-accent-foreground px-4 md:px-6 bg-background">
+      <Link href={`/${lang}/dashboard`} className="flex items-center gap-2 font-semibold">
         <Logo className="h-6 w-6 text-primary" />
-        <span className="text-lg font-bold font-headline">Guardian Gate</span>
+        <span className="text-lg font-bold font-headline">{dict.dashboard.title}</span>
       </Link>
       <div className="ml-auto flex items-center gap-4">
+        <LanguageSwitcher />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="rounded-full">
@@ -30,27 +54,43 @@ export function Header() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="border-2 shadow-hard">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuLabel className="text-muted-foreground">{dict.dashboard.myAccount}</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem disabled>
               <User className="mr-2 h-4 w-4" />
-              <span>Profile</span>
+              <span>{dict.common.profile}</span>
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem disabled>
               <Settings className="mr-2 h-4 w-4" />
-              <span>Settings</span>
+              <span>{dict.common.settings}</span>
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem disabled>
               <LifeBuoy className="mr-2 h-4 w-4" />
-              <span>Support</span>
+              <span>{dict.common.support}</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <LogOut className="mr-2 h-4 w-4" />
-              <span>Logout</span>
-            </DropdownMenuItem>
+            <form action={logout}>
+              <input type="hidden" name="lang" value={lang} />
+              <DropdownMenuItem asChild>
+                <button type="submit" className="w-full flex items-center">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>{dict.common.logout}</span>
+                </button>
+              </DropdownMenuItem>
+            </form>
           </DropdownMenuContent>
         </DropdownMenu>
+      </div>
+      </div>
+      {/* Bottom progress bar - same as top */}
+      <div className="h-[5px] bg-secondary/30">
+        <div
+          className="h-full transition-all duration-1000 ease-linear"
+          style={{
+            width: `${progress}%`,
+            backgroundColor: getProgressColor(progress),
+          }}
+        />
       </div>
     </header>
   );

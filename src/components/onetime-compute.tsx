@@ -11,11 +11,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { AccountCard } from "@/components/dashboard/account-card";
+import { GlobalProgressProvider, GlobalProgressBar } from "@/components/dashboard/global-progress";
 import { useToast } from "@/hooks/use-toast";
-import { History, KeyRound, ShieldQuestion } from "lucide-react";
-import type { Account } from "@/app/dashboard/page";
+import { History, KeyRound, ShieldQuestion, X } from "lucide-react";
+import type { Account } from "@/lib/db/interfaces";
 
-export function OnetimeCompute() {
+export function OnetimeCompute({ dict }: { dict: any }) {
   const [secret, setSecret] = useState("");
   const [activeAccount, setActiveAccount] = useState<Account | null>(null);
   const [history, setHistory] = useState<Account[]>([]);
@@ -31,8 +32,8 @@ export function OnetimeCompute() {
       console.error("Failed to load history from localStorage", error);
       toast({
         variant: "destructive",
-        title: "Could not load history",
-        description: "Your browser may not support local storage.",
+        title: dict.onetime.loadErrorTitle,
+        description: dict.onetime.storageErrorDesc,
       });
     }
   }, [toast]);
@@ -42,17 +43,17 @@ export function OnetimeCompute() {
     if (!secret.trim()) {
       toast({
         variant: "destructive",
-        title: "Secret Key Required",
-        description: "Please enter a secret key to generate a code.",
+        title: dict.onetime.secretRequiredTitle,
+        description: dict.onetime.secretRequiredDesc,
       });
       return;
     }
 
     const newAccount: Account = {
-      id: new Date().toISOString(),
-      name: secret.trim(),
+      id: Date.now(),
+      account: secret.trim(),
       issuer: "One-Time",
-      secretKey: secret.trim(),
+      secret: secret.trim(),
     };
 
     setActiveAccount(newAccount);
@@ -60,7 +61,7 @@ export function OnetimeCompute() {
     setHistory((prev) => {
       const newHistory = [
         newAccount,
-        ...prev.filter((item) => item.name !== secret.trim()),
+        ...prev.filter((item) => item.secret !== secret.trim()),
       ].slice(0, 5); // Keep last 5 unique keys
       try {
         localStorage.setItem("gg-onetime-history", JSON.stringify(newHistory));
@@ -68,8 +69,8 @@ export function OnetimeCompute() {
         console.error("Failed to save history to localStorage", error);
         toast({
             variant: "destructive",
-            title: "Could not save history",
-            description: "Your browser may not support local storage.",
+            title: dict.onetime.saveErrorTitle,
+            description: dict.onetime.storageErrorDesc,
           });
       }
       return newHistory;
@@ -81,6 +82,22 @@ export function OnetimeCompute() {
   const handleHistoryClick = (account: Account) => {
     setActiveAccount(account);
   };
+
+  const handleDeleteHistory = (e: React.MouseEvent, accountId: number | undefined) => {
+    e.stopPropagation();
+    setHistory((prev) => {
+      const newHistory = prev.filter((item) => item.id !== accountId);
+      try {
+        localStorage.setItem("gg-onetime-history", JSON.stringify(newHistory));
+      } catch (error) {
+        console.error("Failed to save history to localStorage", error);
+      }
+      return newHistory;
+    });
+    if (activeAccount?.id === accountId) {
+      setActiveAccount(null);
+    }
+  };
   
   const getGreeting = () => {
     const hours = new Date().getHours();
@@ -91,21 +108,23 @@ export function OnetimeCompute() {
 
 
   return (
-    <div className="container mx-auto max-w-2xl p-4 md:p-8 space-y-6">
+    <GlobalProgressProvider>
+      <GlobalProgressBar />
+      <div className="container mx-auto max-w-2xl p-4 md:p-8 pt-6 md:pt-10 space-y-6">
         <div className="text-center">
             <h1 className="text-3xl md:text-4xl font-bold font-headline tracking-tighter">
-                2FA Verification
+                {dict.onetime.title}
             </h1>
             <p className="text-muted-foreground mt-2">
-                Need a code in a pinch? Use this one-time generator.
+                {dict.onetime.description}
             </p>
         </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Enter Secret Key</CardTitle>
+          <CardTitle>{dict.onetime.enterKeyTitle}</CardTitle>
           <CardDescription>
-            Click to enter your 2FA secret key to generate a one-time password. This key is only stored in your browser.
+            {dict.onetime.enterKeyDesc}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -116,22 +135,22 @@ export function OnetimeCompute() {
               onChange={(e) => setSecret(e.target.value)}
               className="font-mono flex-1"
             />
-            <Button type="submit" className="w-full sm:w-auto">Generate</Button>
+            <Button type="submit" className="w-full sm:w-auto">{dict.onetime.generate}</Button>
           </form>
         </CardContent>
       </Card>
 
       {activeAccount ? (
         <div id="code-display">
-            <h2 className="text-xl font-bold font-headline mb-4">Secret Key Display Area</h2>
-            <AccountCard key={activeAccount.id} account={activeAccount} />
+            <h2 className="text-xl font-bold font-headline mb-4">{dict.onetime.displayTitle}</h2>
+            <AccountCard key={activeAccount.id} account={activeAccount} dict={dict} />
         </div>
       ) : (
         <div className="text-center py-10 border-4 border-dashed border-destructive/50 rounded-xl">
           <ShieldQuestion className="mx-auto h-12 w-12 text-muted-foreground" />
-          <h3 className="mt-4 text-xl font-medium font-headline">SECRET KEY DISPLAY AREA</h3>
+          <h3 className="mt-4 text-xl font-medium font-headline">{dict.onetime.displayEmptyTitle}</h3>
           <p className="mt-1 text-md text-muted-foreground">
-            Your generated code will appear here.
+            {dict.onetime.displayEmptyDesc}
           </p>
         </div>
       )}
@@ -141,27 +160,37 @@ export function OnetimeCompute() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <History className="h-6 w-6" />
-              History of used 2FA
+              {dict.onetime.historyTitle}
             </CardTitle>
             <CardDescription>
-              Select a key to quickly generate a new code. Capped at 5 recent entries.
+              {dict.onetime.historyDesc}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
             {history.map((item) => (
-              <Button
-                key={item.id}
-                variant="outline"
-                className="w-full justify-start font-mono"
-                onClick={() => handleHistoryClick(item)}
-              >
-                <KeyRound className="mr-2" />
-                <span className="truncate">{item.name}</span>
-              </Button>
+              <div key={item.id} className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  className="flex-1 justify-start font-mono"
+                  onClick={() => handleHistoryClick(item)}
+                >
+                  <KeyRound className="mr-2" />
+                  <span className="truncate">{item.account}</span>
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="shrink-0 text-red-500 hover:bg-red-500 hover:text-white border-red-500"
+                  onClick={(e) => handleDeleteHistory(e, item.id)}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
             ))}
           </CardContent>
         </Card>
       )}
     </div>
+    </GlobalProgressProvider>
   );
 }

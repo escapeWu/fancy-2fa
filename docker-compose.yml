@@ -1,0 +1,28 @@
+services:
+  fancy-2fa:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+        - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+    container_name: fancy-2fa
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - AUTH_SECRET_KEY=${AUTH_SECRET_KEY}
+      - API_AUTH_TOKEN=${API_AUTH_TOKEN}
+      - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+    volumes:
+      - fancy-2fa-data:/app/data
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/api/totp?issuer=health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  fancy-2fa-data:
