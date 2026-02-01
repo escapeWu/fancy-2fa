@@ -81,9 +81,8 @@ export function AccountCard({ account, compact = false, onEdit, dict }: AccountC
       setCode("Error!");
       toast({
         variant: "destructive",
-        title: "Invalid Secret Key",
-        description:
-          "Could not generate a code. Please check the secret key and try again.",
+        title: dict.dashboard.invalidSecretTitle,
+        description: dict.dashboard.invalidSecretDesc,
       });
     }
   }, [account.issuer, account.account, account.secret, period, toast]);
@@ -118,7 +117,7 @@ export function AccountCard({ account, compact = false, onEdit, dict }: AccountC
         setCopied(true);
         toast({
           title: dict.dashboard.copied,
-          description: `${account.issuer} code copied to clipboard.`,
+          description: dict.dashboard.copiedDesc.replace("{issuer}", account.issuer),
         });
         setTimeout(() => setCopied(false), 1000);
       });
@@ -131,15 +130,15 @@ export function AccountCard({ account, compact = false, onEdit, dict }: AccountC
         if (account.id) {
             await deleteAccount(account.id);
             toast({
-              title: "Account Deleted",
-              description: "The account has been removed.",
+              title: dict.dialog.accountDeletedTitle,
+              description: dict.dialog.accountDeletedDesc,
             });
         }
       } catch (error) {
         toast({
             variant: "destructive",
-            title: "Error",
-            description: "Failed to delete account.",
+            title: dict.dialog.errorTitle,
+            description: dict.dialog.deleteErrorDesc,
         });
       }
     }
@@ -172,8 +171,8 @@ export function AccountCard({ account, compact = false, onEdit, dict }: AccountC
         <KeyRound className="w-6 h-6 text-accent shrink-0" />
         <div className="flex-1 min-w-0">
           <div className="flex items-baseline gap-2">
-            <span className="font-bold truncate">{account.issuer}</span>
-            <span className="text-sm text-muted-foreground truncate">{account.account}</span>
+            <span className="font-bold truncate">{account.account}</span>
+            <span className="text-sm text-muted-foreground truncate">{account.issuer}</span>
           </div>
         </div>
         <div
@@ -234,8 +233,8 @@ export function AccountCard({ account, compact = false, onEdit, dict }: AccountC
       <CardHeader className="flex-row items-start gap-3 space-y-0 p-4 pb-2 pr-8">
         <KeyRound className="w-6 h-6 text-accent shrink-0 mt-0.5" />
         <div className="flex-1 min-w-0">
-          <CardTitle className="truncate text-lg">{account.issuer}</CardTitle>
-          <CardDescription className="truncate text-xs">{account.account}</CardDescription>
+          <CardTitle className="truncate text-lg">{account.account}</CardTitle>
+          <CardDescription className="truncate text-xs">{account.issuer}</CardDescription>
           {account.tags && account.tags.length > 0 && (
             <div className="flex flex-wrap gap-1 mt-1">
               {account.tags.map((tag) => (
