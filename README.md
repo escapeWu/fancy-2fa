@@ -1,5 +1,7 @@
 # Fancy 2FA (Guardian Gate)
 
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FescapeWu%2Ffancy-2fa&env=NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY,SUPABASE_SERVICE_ROLE_KEY,AUTH_SECRET_KEY,API_AUTH_TOKEN)
+
 A secure, privacy-focused Two-Factor Authentication (2FA) dashboard built with Next.js and Supabase. Manage your TOTP codes, organize accounts with tags, and generate codes via a secure API.
 
 ## Features
