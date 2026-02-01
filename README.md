@@ -4,8 +4,8 @@
 
 A secure, privacy-focused Two-Factor Authentication (2FA) dashboard built with Next.js and Supabase. Manage your TOTP codes, organize accounts with tags, and generate codes via a secure API.
 
-<img width="986" height="1548" alt="image" src="https://github.com/user-attachments/assets/7db0971d-8688-430a-9b87-817d2dc1574b" />
-<img width="968" height="1660" alt="image" src="https://github.com/user-attachments/assets/342a70fa-e7f8-4d40-be6d-6dc08bf26f88" />
+<img src="https://github.com/user-attachments/assets/7db0971d-8688-430a-9b87-817d2dc1574b" />
+<img src="https://github.com/user-attachments/assets/342a70fa-e7f8-4d40-be6d-6dc08bf26f88" />
 
 
 ## Features
