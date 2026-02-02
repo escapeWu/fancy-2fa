@@ -7,7 +7,7 @@ import { PlusCircle, ShieldCheck, ChevronDown, Check, LayoutGrid, List, Search, 
 import { Setup2faDialog } from "@/components/dashboard/setup-2fa-dialog";
 import { AccountCard } from "@/components/dashboard/account-card";
 import { Account, Tag } from "@/lib/db/interfaces";
-import { createAccount, updateAccount, getTags, bulkCreateAccounts } from "@/lib/actions";
+import { createAccount, updateAccount, getTags, bulkCreateAccounts, findOrCreateTagByName } from "@/lib/actions";
 import { useToast } from "@/hooks/use-toast";
 import {
   DropdownMenu,
@@ -70,7 +70,7 @@ export function DashboardClient({ initialAccounts, dict, lang }: DashboardClient
   }, [sortMode]);
 
   const handleExport = () => {
-    const headers = ['issuer', 'account', 'secret', 'remark'];
+    const headers = ['issuer', 'account', 'secret', 'remark', 'tags'];
     const csvContent = [
       headers.join(','),
       ...accounts.map(a => {
@@ -81,7 +81,8 @@ export function DashboardClient({ initialAccounts, dict, lang }: DashboardClient
              }
              return str;
         };
-        return `${escape(a.issuer)},${escape(a.account)},${escape(a.secret)},${escape(a.remark || '')}`;
+        const tagsStr = a.tags?.map(t => t.name).join(',') || '';
+        return `${escape(a.issuer)},${escape(a.account)},${escape(a.secret)},${escape(a.remark || '')},${escape(tagsStr)}`;
       })
     ].join('\n');
 
@@ -111,23 +112,55 @@ export function DashboardClient({ initialAccounts, dict, lang }: DashboardClient
       // Skip header if it exists
       const startIndex = lines[0].toLowerCase().startsWith('issuer,') ? 1 : 0;
 
-      const newAccounts = [];
+      const newAccounts: {issuer: string, account: string, secret: string, remark: string, tags: Tag[]}[] = [];
+
+      // Cache for tags: name -> Tag object
+      const tagCache: Map<string, Tag> = new Map();
+      // Pre-populate cache with existing tags
+      for (const tag of availableTags) {
+        tagCache.set(tag.name.toLowerCase(), tag);
+      }
+
       for (let i = startIndex; i < lines.length; i++) {
         const parts = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
         if (parts.length >= 3) {
             const clean = (s: string) => s ? s.trim().replace(/^"|"$/g, '').replace(/""/g, '"') : '';
-            newAccounts.push({
-                issuer: clean(parts[0]),
-                account: clean(parts[1]),
-                secret: clean(parts[2]),
-                remark: parts.length >= 4 ? clean(parts[3]) : ''
-            });
+            const issuer = clean(parts[0]);
+            const account = clean(parts[1]);
+            const secret = clean(parts[2]);
+            const remark = parts.length >= 4 ? clean(parts[3]) : '';
+            const tagsStr = parts.length >= 5 ? clean(parts[4]) : '';
+
+            // Parse tags
+            const tags: Tag[] = [];
+            if (tagsStr) {
+              const tagNames = tagsStr.split(',').map(t => t.trim()).filter(t => t);
+              for (const tagName of tagNames) {
+                const cacheKey = tagName.toLowerCase();
+                let tag = tagCache.get(cacheKey);
+                if (!tag) {
+                  // Create new tag via server action
+                  try {
+                    tag = await findOrCreateTagByName(tagName);
+                    tagCache.set(cacheKey, tag);
+                  } catch (err) {
+                    console.error(`Failed to create tag: ${tagName}`, err);
+                    continue;
+                  }
+                }
+                tags.push(tag);
+              }
+            }
+
+            newAccounts.push({ issuer, account, secret, remark, tags });
         }
       }
 
       if (newAccounts.length > 0) {
           try {
             const count = await bulkCreateAccounts(newAccounts);
+            // Refresh available tags after import
+            getTags().then(setAvailableTags).catch(console.error);
             toast({
                 title: dict.dashboard.importSuccessTitle,
                 description: dict.dashboard.importSuccessDesc.replace("{count}", count.toString()),

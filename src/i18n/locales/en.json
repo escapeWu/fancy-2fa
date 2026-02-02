@@ -108,5 +108,20 @@
     "loadErrorTitle": "Could not load history",
     "saveErrorTitle": "Could not save history",
     "storageErrorDesc": "Your browser may not support local storage."
+  },
+  "share": {
+    "title": "Shared Code",
+    "description": "This verification code has been shared with you.",
+    "clickToCopy": "Click the code to copy",
+    "createdTitle": "Share Link Created",
+    "createdDesc": "The share link has been copied to clipboard.",
+    "copiedTitle": "Link Copied",
+    "copiedDesc": "The share link has been copied to clipboard.",
+    "copiedHint": "Shift + Click to remove share link",
+    "removedTitle": "Share Removed",
+    "removedDesc": "The share link has been removed.",
+    "errorDesc": "Failed to update share link.",
+    "notFoundTitle": "Link Not Found",
+    "notFoundDesc": "This share link is invalid or has been removed."
   }
 }

@@ -108,5 +108,20 @@
     "loadErrorTitle": "无法加载历史记录",
     "saveErrorTitle": "无法保存历史记录",
     "storageErrorDesc": "您的浏览器可能不支持本地存储。"
+  },
+  "share": {
+    "title": "分享验证码",
+    "description": "此验证码已分享给您。",
+    "clickToCopy": "点击验证码复制",
+    "createdTitle": "分享链接已创建",
+    "createdDesc": "分享链接已复制到剪贴板。",
+    "copiedTitle": "链接已复制",
+    "copiedDesc": "分享链接已复制到剪贴板。",
+    "copiedHint": "Shift + 点击可删除分享链接",
+    "removedTitle": "分享已移除",
+    "removedDesc": "分享链接已被移除。",
+    "errorDesc": "更新分享链接失败。",
+    "notFoundTitle": "链接未找到",
+    "notFoundDesc": "此分享链接无效或已被移除。"
   }
 }

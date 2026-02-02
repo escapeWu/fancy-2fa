@@ -13,9 +13,9 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import type { Account } from "@/lib/db/interfaces";
-import { KeyRound, X, Pencil } from "lucide-react";
+import { KeyRound, X, Pencil, Share2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { deleteAccount } from "@/lib/actions";
+import { deleteAccount, createShareLink, deleteShareLink } from "@/lib/actions";
 import { useGlobalProgress } from "./global-progress";
 import { cn } from "@/lib/utils";
 
@@ -48,6 +48,7 @@ export function AccountCard({ account, compact = false, onEdit, dict }: AccountC
   const [copied, setCopied] = useState(false);
   const [copiedAccount, setCopiedAccount] = useState(false);
   const [copiedRemark, setCopiedRemark] = useState(false);
+  const [isSharing, setIsSharing] = useState(false);
   const { remaining: globalRemaining, progress: globalProgress } = useGlobalProgress();
   const { toast } = useToast();
 
@@ -172,11 +173,70 @@ export function AccountCard({ account, compact = false, onEdit, dict }: AccountC
     }
   };
 
+  const handleShare = async (e: React.MouseEvent) => {
+    if (!account.id) return;
+    setIsSharing(true);
+    try {
+      if (account.share_link) {
+        // Shift+click to remove share link
+        if (e.shiftKey) {
+          await deleteShareLink(account.id);
+          toast({
+            title: dict.share?.removedTitle || "Share Removed",
+            description: dict.share?.removedDesc || "The share link has been removed.",
+          });
+        } else {
+          // Normal click: copy existing link
+          const shareUrl = `${window.location.origin}${window.location.pathname.split('/').slice(0, 2).join('/')}/s/${account.share_link}`;
+          await navigator.clipboard.writeText(shareUrl);
+          toast({
+            title: dict.share?.copiedTitle || "Link Copied",
+            description: (
+              <div className="flex flex-col gap-1">
+                <span>{dict.share?.copiedDesc || "The share link has been copied to clipboard."}</span>
+                <span className="text-xs text-purple-500 font-medium">{dict.share?.copiedHint || "Shift + Click to remove share link"}</span>
+              </div>
+            ),
+          });
+        }
+      } else {
+        // Create share link
+        const shareLink = await createShareLink(account.id);
+        const shareUrl = `${window.location.origin}${window.location.pathname.split('/').slice(0, 2).join('/')}/s/${shareLink.short_link}`;
+        await navigator.clipboard.writeText(shareUrl);
+        toast({
+          title: dict.share?.createdTitle || "Share Link Created",
+          description: dict.share?.createdDesc || "The share link has been copied to clipboard.",
+        });
+      }
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: dict.dialog.errorTitle,
+        description: dict.share?.errorDesc || "Failed to update share link.",
+      });
+    } finally {
+      setIsSharing(false);
+    }
+  };
+
   // Compact mode - single row layout
   if (compact) {
     return (
       <Card className="flex items-center relative group px-4 py-3 gap-4">
         <div className="absolute top-1/2 -translate-y-1/2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-card shadow-sm border rounded-md p-1 z-10">
+          <Button
+            variant="ghost"
+            size="icon"
+            className={cn(
+              "h-6 w-6",
+              account.share_link ? "text-green-500 hover:text-green-600" : "text-muted-foreground hover:text-primary"
+            )}
+            onClick={handleShare}
+            disabled={isSharing}
+          >
+            <Share2 className="h-4 w-4" />
+          </Button>
           {onEdit && (
             <Button
               variant="ghost"
@@ -196,7 +256,12 @@ export function AccountCard({ account, compact = false, onEdit, dict }: AccountC
             <X className="h-4 w-4" />
           </Button>
         </div>
-        <KeyRound className="w-6 h-6 text-accent shrink-0" />
+        <div className="relative shrink-0">
+          <KeyRound className={cn("w-6 h-6 shrink-0", account.share_link ? "text-green-500" : "text-accent")} />
+          {account.share_link && (
+            <Share2 className="absolute -top-1 -right-1 w-3 h-3 text-green-500" />
+          )}
+        </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-baseline gap-2">
             <span
@@ -258,6 +323,18 @@ export function AccountCard({ account, compact = false, onEdit, dict }: AccountC
   return (
     <Card className="flex flex-col relative group">
         <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          <Button
+            variant="ghost"
+            size="icon"
+            className={cn(
+              "h-6 w-6",
+              account.share_link ? "text-green-500 hover:text-green-600" : "text-muted-foreground hover:text-primary"
+            )}
+            onClick={handleShare}
+            disabled={isSharing}
+          >
+            <Share2 className="h-4 w-4" />
+          </Button>
           {onEdit && (
             <Button
               variant="ghost"
@@ -278,7 +355,12 @@ export function AccountCard({ account, compact = false, onEdit, dict }: AccountC
           </Button>
         </div>
       <CardHeader className="flex-row items-start gap-3 space-y-0 p-4 pb-2 pr-8">
-        <KeyRound className="w-6 h-6 text-accent shrink-0 mt-0.5" />
+        <div className="relative shrink-0 mt-0.5">
+          <KeyRound className={cn("w-6 h-6", account.share_link ? "text-green-500" : "text-accent")} />
+          {account.share_link && (
+            <Share2 className="absolute -top-1 -right-1 w-3 h-3 text-green-500" />
+          )}
+        </div>
         <div className="flex-1 min-w-0">
           <CardTitle
             onClick={handleCopyAccount}

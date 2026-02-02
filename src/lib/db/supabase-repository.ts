@@ -1,5 +1,5 @@
 import { supabaseAdmin } from '../supabase';
-import { Account, IAccountRepository, IUserRepository, Repository, Tag, User } from './interfaces';
+import { Account, IAccountRepository, ITagRepository, IUserRepository, IShareLinkRepository, Repository, Tag, User, ShareLink } from './interfaces';
 
 // --- User Repository ---
 export class SupabaseUserRepository implements IUserRepository {
@@ -60,7 +60,7 @@ export class SupabaseUserRepository implements IUserRepository {
 }
 
 // --- Tag Repository ---
-export class SupabaseTagRepository implements Repository<Tag> {
+export class SupabaseTagRepository implements ITagRepository {
   async create(tag: Tag): Promise<Tag> {
     const { data, error } = await supabaseAdmin
       .from('tags')
@@ -76,6 +76,16 @@ export class SupabaseTagRepository implements Repository<Tag> {
       .from('tags')
       .select('*')
       .eq('id', id)
+      .single();
+    if (error) return undefined;
+    return data;
+  }
+
+  async findByName(name: string): Promise<Tag | undefined> {
+    const { data, error } = await supabaseAdmin
+      .from('tags')
+      .select('*')
+      .eq('name', name)
       .single();
     if (error) return undefined;
     return data;
@@ -144,13 +154,16 @@ export class SupabaseAccountRepository implements IAccountRepository {
       .from('accounts')
       .select(`
         *,
-        tags (*)
+        tags (*),
+        share_links (short_link)
       `)
       .eq('id', id)
       .single();
 
     if (error) return undefined;
-    return data;
+    // Flatten share_link from the join result
+    const shareLink = data.share_links?.[0]?.short_link || data.share_links?.short_link;
+    return { ...data, share_link: shareLink, share_links: undefined };
   }
 
   async findAll(): Promise<Account[]> {
@@ -158,12 +171,17 @@ export class SupabaseAccountRepository implements IAccountRepository {
       .from('accounts')
       .select(`
         *,
-        tags (*)
+        tags (*),
+        share_links (short_link)
       `)
       .order('created_at', { ascending: false });
 
     if (error) throw new Error(error.message);
-    return data || [];
+    // Flatten share_link from the join result for each account
+    return (data || []).map((acc: any) => {
+      const shareLink = acc.share_links?.[0]?.short_link || acc.share_links?.short_link;
+      return { ...acc, share_link: shareLink, share_links: undefined };
+    });
   }
 
   async update(id: number, account: Partial<Account>): Promise<boolean> {
@@ -244,7 +262,49 @@ export class SupabaseAccountRepository implements IAccountRepository {
   }
 }
 
+// --- ShareLink Repository ---
+export class SupabaseShareLinkRepository implements IShareLinkRepository {
+  async create(shortLink: string, accountId: number): Promise<ShareLink> {
+    const { data, error } = await supabaseAdmin
+      .from('share_links')
+      .insert({ short_link: shortLink, account_id: accountId })
+      .select()
+      .single();
+    if (error) throw new Error(error.message);
+    return data;
+  }
+
+  async findByAccountId(accountId: number): Promise<ShareLink | undefined> {
+    const { data, error } = await supabaseAdmin
+      .from('share_links')
+      .select('*')
+      .eq('account_id', accountId)
+      .single();
+    if (error) return undefined;
+    return data;
+  }
+
+  async findByShortLink(shortLink: string): Promise<ShareLink | undefined> {
+    const { data, error } = await supabaseAdmin
+      .from('share_links')
+      .select('*')
+      .eq('short_link', shortLink)
+      .single();
+    if (error) return undefined;
+    return data;
+  }
+
+  async deleteByAccountId(accountId: number): Promise<boolean> {
+    const { error } = await supabaseAdmin
+      .from('share_links')
+      .delete()
+      .eq('account_id', accountId);
+    return !error;
+  }
+}
+
 // Export singleton instances
 export const UserRepository = new SupabaseUserRepository();
 export const AccountRepository = new SupabaseAccountRepository();
 export const TagRepository = new SupabaseTagRepository();
+export const ShareLinkRepository = new SupabaseShareLinkRepository();

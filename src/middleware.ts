@@ -45,6 +45,11 @@ export function middleware(request: NextRequest) {
     }
   }
 
+  // Allow shared code pages without authentication (handled by /s/ route)
+  if (pathname.includes('/s/')) {
+    return NextResponse.next();
+  }
+
   // Redirect authenticated users away from login page
   if (pathname.includes('/login')) {
     if (isAuth) {

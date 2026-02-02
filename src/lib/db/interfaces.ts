@@ -12,6 +12,13 @@ export interface Tag {
   color: string;
 }
 
+export interface ShareLink {
+  id?: number;
+  short_link: string;
+  account_id: number;
+  created_at?: string;
+}
+
 export interface Account {
   id?: number;
   issuer: string;
@@ -21,6 +28,7 @@ export interface Account {
   period?: number; // TOTP period in seconds, defaults to 30
   created_at?: string;
   tags?: Tag[]; // 这是一个聚合字段，读取时自动填充
+  share_link?: string; // 分享短链，读取时自动填充
 }
 
 // 基础 Repository 接口
@@ -37,6 +45,17 @@ export interface IAccountRepository extends Repository<Account> {
   addTagToAccount(accountId: number, tagId: number): Promise<boolean>;
   removeTagFromAccount(accountId: number, tagId: number): Promise<boolean>;
   findByIssuerAndAccount(issuer: string, account?: string): Promise<Account | undefined>;
+}
+
+export interface ITagRepository extends Repository<Tag> {
+  findByName(name: string): Promise<Tag | undefined>;
+}
+
+export interface IShareLinkRepository {
+  create(shortLink: string, accountId: number): Promise<ShareLink>;
+  findByAccountId(accountId: number): Promise<ShareLink | undefined>;
+  findByShortLink(shortLink: string): Promise<ShareLink | undefined>;
+  deleteByAccountId(accountId: number): Promise<boolean>;
 }
 
 export interface IUserRepository extends Repository<User> {
