@@ -113,7 +113,8 @@ export class SupabaseAccountRepository implements IAccountRepository {
       .insert({
         issuer: account.issuer,
         account: account.account,
-        secret: account.secret
+        secret: account.secret,
+        remark: account.remark || ''
       })
       .select()
       .single();
@@ -167,11 +168,12 @@ export class SupabaseAccountRepository implements IAccountRepository {
 
   async update(id: number, account: Partial<Account>): Promise<boolean> {
     // 1. Update basic fields
-    const { issuer, account: accName, secret, tags } = account;
+    const { issuer, account: accName, secret, remark, tags } = account;
     const updates: any = {};
     if (issuer) updates.issuer = issuer;
     if (accName) updates.account = accName;
     if (secret) updates.secret = secret;
+    if (remark !== undefined) updates.remark = remark;
 
     if (Object.keys(updates).length > 0) {
       const { error } = await supabaseAdmin
