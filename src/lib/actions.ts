@@ -20,7 +20,7 @@ export async function createAccount(issuer: string, accountName: string, secret:
   return newAccount;
 }
 
-export async function bulkCreateAccounts(accountsData: {issuer: string, account: string, secret: string}[]) {
+export async function bulkCreateAccounts(accountsData: {issuer: string, account: string, secret: string, remark?: string}[]) {
   // Use a transaction if possible, or just sequential inserts.
   // Since repository methods are asynchronous, we await them.
 
@@ -31,6 +31,7 @@ export async function bulkCreateAccounts(accountsData: {issuer: string, account:
             issuer: acc.issuer,
             account: acc.account,
             secret: acc.secret,
+            remark: acc.remark || '',
             tags: []
         });
         count++;

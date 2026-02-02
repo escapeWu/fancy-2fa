@@ -29,6 +29,11 @@ interface DashboardClientProps {
   lang: string;
 }
 
+const STORAGE_KEYS = {
+  VIEW_MODE: 'fancy-2fa-view-mode',
+  SORT_MODE: 'fancy-2fa-sort-mode',
+} as const;
+
 export function DashboardClient({ initialAccounts, dict, lang }: DashboardClientProps) {
   const accounts = initialAccounts;
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -36,14 +41,36 @@ export function DashboardClient({ initialAccounts, dict, lang }: DashboardClient
   const [selectedIssuer, setSelectedIssuer] = useState<string>("ALL");
   const [selectedTags, setSelectedTags] = useState<number[]>([]);
   const [availableTags, setAvailableTags] = useState<Tag[]>([]);
-  const [viewMode, setViewMode] = useState<ViewMode>("grid");
-  const [sortMode, setSortMode] = useState<'time' | 'name'>('time');
+  const [viewMode, setViewMode] = useState<ViewMode>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem(STORAGE_KEYS.VIEW_MODE);
+      if (saved === 'grid' || saved === 'compact') return saved;
+    }
+    return 'grid';
+  });
+  const [sortMode, setSortMode] = useState<'time' | 'name'>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem(STORAGE_KEYS.SORT_MODE);
+      if (saved === 'time' || saved === 'name') return saved;
+    }
+    return 'time';
+  });
   const [searchQuery, setSearchQuery] = useState("");
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Persist viewMode to localStorage
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.VIEW_MODE, viewMode);
+  }, [viewMode]);
+
+  // Persist sortMode to localStorage
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.SORT_MODE, sortMode);
+  }, [sortMode]);
+
   const handleExport = () => {
-    const headers = ['issuer', 'account', 'secret'];
+    const headers = ['issuer', 'account', 'secret', 'remark'];
     const csvContent = [
       headers.join(','),
       ...accounts.map(a => {
@@ -54,7 +81,7 @@ export function DashboardClient({ initialAccounts, dict, lang }: DashboardClient
              }
              return str;
         };
-        return `${escape(a.issuer)},${escape(a.account)},${escape(a.secret)}`;
+        return `${escape(a.issuer)},${escape(a.account)},${escape(a.secret)},${escape(a.remark || '')}`;
       })
     ].join('\n');
 
@@ -92,7 +119,8 @@ export function DashboardClient({ initialAccounts, dict, lang }: DashboardClient
             newAccounts.push({
                 issuer: clean(parts[0]),
                 account: clean(parts[1]),
-                secret: clean(parts[2])
+                secret: clean(parts[2]),
+                remark: parts.length >= 4 ? clean(parts[3]) : ''
             });
         }
       }
@@ -145,7 +173,7 @@ export function DashboardClient({ initialAccounts, dict, lang }: DashboardClient
 
   // Filter accounts based on selected issuer, search query and tags
   const filteredAccounts = useMemo(() => {
-    let result = accounts;
+    let result = [...accounts]; // Create a copy to avoid mutating the original
 
     // Filter by issuer
     if (selectedIssuer !== "ALL") {
