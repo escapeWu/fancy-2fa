@@ -47,6 +47,8 @@
     "sortTime": "Time",
     "sortName": "Name",
     "copiedDesc": "{issuer} code copied to clipboard.",
+    "copiedAccountDesc": "Account \"{account}\" copied to clipboard.",
+    "copiedRemarkDesc": "Remark \"{remark}\" copied to clipboard.",
     "invalidSecretTitle": "Invalid Secret Key",
     "invalidSecretDesc": "Could not generate a code. Please check the secret key and try again."
   },

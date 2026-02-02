@@ -47,6 +47,8 @@
     "sortTime": "时间",
     "sortName": "命名",
     "copiedDesc": "{issuer} 验证码已复制到剪贴板。",
+    "copiedAccountDesc": "账户 \"{account}\" 已复制到剪贴板。",
+    "copiedRemarkDesc": "备注 \"{remark}\" 已复制到剪贴板。",
     "invalidSecretTitle": "无效的密钥",
     "invalidSecretDesc": "无法生成验证码。请检查密钥并重试。"
   },

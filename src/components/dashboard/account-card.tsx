@@ -46,6 +46,8 @@ interface AccountCardProps {
 export function AccountCard({ account, compact = false, onEdit, dict }: AccountCardProps) {
   const [code, setCode] = useState("------");
   const [copied, setCopied] = useState(false);
+  const [copiedAccount, setCopiedAccount] = useState(false);
+  const [copiedRemark, setCopiedRemark] = useState(false);
   const { remaining: globalRemaining, progress: globalProgress } = useGlobalProgress();
   const { toast } = useToast();
 
@@ -124,6 +126,32 @@ export function AccountCard({ account, compact = false, onEdit, dict }: AccountC
     }
   };
 
+  const handleCopyAccount = () => {
+    if (account.account) {
+      navigator.clipboard.writeText(account.account).then(() => {
+        setCopiedAccount(true);
+        toast({
+          title: dict.dashboard.copied,
+          description: dict.dashboard.copiedAccountDesc.replace("{account}", account.account),
+        });
+        setTimeout(() => setCopiedAccount(false), 1000);
+      });
+    }
+  };
+
+  const handleCopyRemark = () => {
+    if (account.remark) {
+      navigator.clipboard.writeText(account.remark).then(() => {
+        setCopiedRemark(true);
+        toast({
+          title: dict.dashboard.copied,
+          description: dict.dashboard.copiedRemarkDesc.replace("{remark}", account.remark),
+        });
+        setTimeout(() => setCopiedRemark(false), 1000);
+      });
+    }
+  };
+
   const handleDelete = async () => {
     if (confirm(dict.dashboard.confirmDelete)) {
       try {
@@ -171,10 +199,26 @@ export function AccountCard({ account, compact = false, onEdit, dict }: AccountC
         <KeyRound className="w-6 h-6 text-accent shrink-0" />
         <div className="flex-1 min-w-0">
           <div className="flex items-baseline gap-2">
-            <span className="font-bold truncate">{account.account}</span>
+            <span
+              onClick={handleCopyAccount}
+              className={cn(
+                "font-bold truncate cursor-pointer transition-all rounded px-1",
+                copiedAccount ? "bg-green-500/20 scale-105" : "hover:bg-muted active:scale-95"
+              )}
+            >
+              {account.account}
+            </span>
             <span className="text-sm text-muted-foreground truncate">{account.issuer}</span>
             {account.remark && (
-              <span className="text-sm text-yellow-500 truncate">{account.remark}</span>
+              <span
+                onClick={handleCopyRemark}
+                className={cn(
+                  "text-sm text-yellow-500 truncate cursor-pointer transition-all rounded px-1",
+                  copiedRemark ? "bg-green-500/20 scale-105" : "hover:bg-muted active:scale-95"
+                )}
+              >
+                {account.remark}
+              </span>
             )}
           </div>
         </div>
@@ -236,11 +280,27 @@ export function AccountCard({ account, compact = false, onEdit, dict }: AccountC
       <CardHeader className="flex-row items-start gap-3 space-y-0 p-4 pb-2 pr-8">
         <KeyRound className="w-6 h-6 text-accent shrink-0 mt-0.5" />
         <div className="flex-1 min-w-0">
-          <CardTitle className="truncate text-lg">{account.account}</CardTitle>
+          <CardTitle
+            onClick={handleCopyAccount}
+            className={cn(
+              "truncate text-lg cursor-pointer transition-all rounded px-1 inline-block",
+              copiedAccount ? "bg-green-500/20 scale-105" : "hover:bg-muted active:scale-95"
+            )}
+          >
+            {account.account}
+          </CardTitle>
           <CardDescription className="truncate text-xs">
             {account.issuer}
             {account.remark && (
-              <span className="ml-2 text-yellow-500">{account.remark}</span>
+              <span
+                onClick={handleCopyRemark}
+                className={cn(
+                  "ml-2 text-yellow-500 cursor-pointer transition-all rounded px-1",
+                  copiedRemark ? "bg-green-500/20 scale-105" : "hover:bg-muted active:scale-95"
+                )}
+              >
+                {account.remark}
+              </span>
             )}
           </CardDescription>
           {account.tags && account.tags.length > 0 && (
