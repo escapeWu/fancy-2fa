@@ -173,6 +173,9 @@ export function AccountCard({ account, compact = false, onEdit, dict }: AccountC
           <div className="flex items-baseline gap-2">
             <span className="font-bold truncate">{account.account}</span>
             <span className="text-sm text-muted-foreground truncate">{account.issuer}</span>
+            {account.remark && (
+              <span className="text-sm text-yellow-500 truncate">{account.remark}</span>
+            )}
           </div>
         </div>
         <div
@@ -234,7 +237,12 @@ export function AccountCard({ account, compact = false, onEdit, dict }: AccountC
         <KeyRound className="w-6 h-6 text-accent shrink-0 mt-0.5" />
         <div className="flex-1 min-w-0">
           <CardTitle className="truncate text-lg">{account.account}</CardTitle>
-          <CardDescription className="truncate text-xs">{account.issuer}</CardDescription>
+          <CardDescription className="truncate text-xs">
+            {account.issuer}
+            {account.remark && (
+              <span className="ml-2 text-yellow-500">{account.remark}</span>
+            )}
+          </CardDescription>
           {account.tags && account.tags.length > 0 && (
             <div className="flex flex-wrap gap-1 mt-1">
               {account.tags.map((tag) => (

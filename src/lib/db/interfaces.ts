@@ -17,6 +17,7 @@ export interface Account {
   issuer: string;
   account: string;
   secret: string;
+  remark?: string;
   period?: number; // TOTP period in seconds, defaults to 30
   created_at?: string;
   tags?: Tag[]; // 这是一个聚合字段，读取时自动填充

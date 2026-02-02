@@ -20,6 +20,7 @@ create table if not exists accounts (
   issuer text not null,
   account text not null,
   secret text not null,
+  remark text,
   created_at timestamptz default now()
 );
 
