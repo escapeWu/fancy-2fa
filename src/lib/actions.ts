@@ -8,11 +8,12 @@ export async function getAccounts() {
   return await AccountRepository.findAll();
 }
 
-export async function createAccount(issuer: string, accountName: string, secret: string, tags: Tag[] = []) {
+export async function createAccount(issuer: string, accountName: string, secret: string, tags: Tag[] = [], remark: string = '') {
   const newAccount = await AccountRepository.create({
     issuer,
     account: accountName,
     secret,
+    remark,
     tags,
   });
   revalidatePath('/dashboard');
@@ -47,11 +48,12 @@ export async function deleteAccount(id: number) {
   return success;
 }
 
-export async function updateAccount(id: number, issuer: string, accountName: string, secret: string, tags: Tag[] = []) {
+export async function updateAccount(id: number, issuer: string, accountName: string, secret: string, tags: Tag[] = [], remark: string = '') {
   const success = await AccountRepository.update(id, {
     issuer,
     account: accountName,
     secret,
+    remark,
     tags,
   });
   revalidatePath('/dashboard');

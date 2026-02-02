@@ -61,6 +61,8 @@
     "accountPlaceholder": "e.g., user@example.com",
     "secretLabel": "Secret Key",
     "secretPlaceholder": "Enter your secret key",
+    "remarkLabel": "Remark",
+    "remarkPlaceholder": "Optional note for this account",
     "tagsLabel": "Tags",
     "saving": "Saving...",
     "save": "Save",

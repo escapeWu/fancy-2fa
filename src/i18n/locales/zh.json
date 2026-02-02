@@ -61,6 +61,8 @@
     "accountPlaceholder": "例如：user@example.com",
     "secretLabel": "密钥",
     "secretPlaceholder": "输入您的密钥",
+    "remarkLabel": "备注",
+    "remarkPlaceholder": "可选的账户备注",
     "tagsLabel": "标签",
     "saving": "保存中...",
     "save": "保存",

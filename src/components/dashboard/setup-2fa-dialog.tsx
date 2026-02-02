@@ -20,7 +20,7 @@ import { TagSelector } from "./tag-selector";
 type Setup2faDialogProps = {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  onSuccess: (name: string, issuer: string, secretKey: string, tags: Tag[]) => void | Promise<void>;
+  onSuccess: (name: string, issuer: string, secretKey: string, tags: Tag[], remark: string) => void | Promise<void>;
   editAccount?: Account | null;
   dict: any;
 };
@@ -35,6 +35,7 @@ export function Setup2faDialog({
   const [accountName, setAccountName] = useState("");
   const [issuerName, setIssuerName] = useState("");
   const [secretKey, setSecretKey] = useState("");
+  const [remark, setRemark] = useState("");
   const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
   const [dialogContainer, setDialogContainer] = useState<HTMLDivElement | null>(null);
   const { toast } = useToast();
@@ -46,12 +47,14 @@ export function Setup2faDialog({
       setAccountName(editAccount.account);
       setIssuerName(editAccount.issuer);
       setSecretKey(editAccount.secret);
+      setRemark(editAccount.remark || "");
       setSelectedTags(editAccount.tags || []);
     } else if (!isOpen) {
       const timer = setTimeout(() => {
         setAccountName("");
         setIssuerName("");
         setSecretKey("");
+        setRemark("");
         setSelectedTags([]);
       }, 300);
       return () => clearTimeout(timer);
@@ -73,7 +76,7 @@ export function Setup2faDialog({
 
     setIsLoading(true);
     try {
-      await onSuccess(accountName, issuerName, secretKey, selectedTags);
+      await onSuccess(accountName, issuerName, secretKey, selectedTags, remark);
       setIsOpen(false);
     } catch (error) {
        // Let the parent handle the error toast if needed, or do it here
@@ -123,6 +126,16 @@ export function Setup2faDialog({
                     value={secretKey}
                     onChange={e => setSecretKey(e.target.value)}
                     className="font-mono tracking-wider"
+                    disabled={isLoading}
+                  />
+              </div>
+              <div className="space-y-2">
+                  <Label htmlFor="remark">{dict.dialog.remarkLabel}</Label>
+                  <Input
+                    id="remark"
+                    placeholder={dict.dialog.remarkPlaceholder}
+                    value={remark}
+                    onChange={e => setRemark(e.target.value)}
                     disabled={isLoading}
                   />
               </div>

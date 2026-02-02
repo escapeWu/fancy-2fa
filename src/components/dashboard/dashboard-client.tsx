@@ -217,16 +217,16 @@ export function DashboardClient({ initialAccounts, dict, lang }: DashboardClient
     }
   }, [filteredGroupedAccounts, sortMode]);
 
-  const handleAddAccount = async (accountName: string, issuer: string, secret: string, tags: Tag[]) => {
+  const handleAddAccount = async (accountName: string, issuer: string, secret: string, tags: Tag[], remark: string) => {
     try {
       if (editAccount && editAccount.id) {
-        await updateAccount(editAccount.id, issuer, accountName, secret, tags);
+        await updateAccount(editAccount.id, issuer, accountName, secret, tags, remark);
         toast({
           title: dict.dialog.accountUpdatedTitle,
           description: dict.dialog.accountUpdatedDesc.replace("{issuer}", issuer),
         });
       } else {
-        await createAccount(issuer, accountName, secret, tags);
+        await createAccount(issuer, accountName, secret, tags, remark);
         toast({
           title: dict.dialog.accountAddedTitle,
           description: dict.dialog.accountAddedDesc.replace("{issuer}", issuer),
