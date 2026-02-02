@@ -20,10 +20,10 @@ A secure, privacy-focused Two-Factor Authentication (2FA) dashboard.
 
 ### 1. Environment Configuration
 
-Copy the example environment file to `.env.local`:
+Copy the example environment file to `.env`:
 
 ```bash
-cp .env.example .env.local
+cp .env.example .env
 ```
 
 Edit `.env.local` and configure the following variables:
