@@ -4,8 +4,7 @@
 
 A secure, privacy-focused Two-Factor Authentication (2FA) dashboard built with Next.js and Supabase. Manage your TOTP codes, organize accounts with tags, and generate codes via a secure API.
 
-<img width="394" height="619" src="https://github.com/user-attachments/assets/7db0971d-8688-430a-9b87-817d2dc1574b" />
-<img width="394" height="619" src="https://github.com/user-attachments/assets/342a70fa-e7f8-4d40-be6d-6dc08bf26f88" />
+
 
 
 ## Features
@@ -16,7 +15,8 @@ A secure, privacy-focused Two-Factor Authentication (2FA) dashboard built with N
 - 📱 **API Access**: Generate TOTP codes programmatically via a secured API endpoint.
 - 🔍 **Search & Sort**: Quickly find accounts with search and sorting capabilities.
 - ☁️ **Supabase Backend**: Reliable data persistence with Row Level Security (RLS).
-
+<img width="394" height="619" src="https://github.com/user-attachments/assets/7db0971d-8688-430a-9b87-817d2dc1574b" />
+<img width="394" height="619" src="https://github.com/user-attachments/assets/342a70fa-e7f8-4d40-be6d-6dc08bf26f88" />
 ## Prerequisites
 
 - Node.js 18+ installed.
@@ -24,22 +24,7 @@ A secure, privacy-focused Two-Factor Authentication (2FA) dashboard built with N
 
 ## Getting Started
 
-### 1. Clone the Repository
-
-```bash
-git clone <repository-url>
-cd fancy-2fa
-```
-
-### 2. Install Dependencies
-
-```bash
-npm install
-# or
-yarn install
-```
-
-### 3. Environment Configuration
+### 1. Environment Configuration
 
 Copy the example environment file to `.env.local`:
 
@@ -57,7 +42,7 @@ Edit `.env.local` and configure the following variables:
 | `AUTH_SECRET_KEY` | **Required.** The password used to log in to the web dashboard. Choose a strong secret. |
 | `API_AUTH_TOKEN` | **Required.** The token used to authenticate requests to the `/api/totp` endpoint. |
 
-### 4. Database Setup (Supabase)
+### 2. Database Setup (Supabase)
 
 1.  Go to your Supabase project's **SQL Editor**.
 2.  Open the `supabase_schema.sql` file located in the root of this project.
@@ -66,15 +51,6 @@ Edit `.env.local` and configure the following variables:
     *   It sets up Row Level Security (RLS) policies.
     *   It creates a default admin user.
 
-### 5. Run the Application
-
-```bash
-npm run dev
-# or
-yarn dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Usage
 
@@ -100,15 +76,6 @@ You can generate a TOTP code programmatically using the API.
 curl -H "Authorization: Bearer your-api-token" \
      "http://localhost:3000/api/totp?issuer=Google&account=user@example.com"
 ```
-
-## Tech Stack
-
-- **Framework:** Next.js 15 (App Router)
-- **Language:** TypeScript
-- **Database:** Supabase
-- **Styling:** Tailwind CSS, Radix UI, Lucide React
-- **Auth/TOTP:** `otpauth`
-- **AI Integration:** Genkit (Google GenAI)
 
 ## License
 
