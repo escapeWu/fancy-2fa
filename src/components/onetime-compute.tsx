@@ -110,12 +110,12 @@ export function OnetimeCompute({ dict }: { dict: any }) {
   return (
     <GlobalProgressProvider>
       <GlobalProgressBar />
-      <div className="container mx-auto max-w-2xl p-4 md:p-8 pt-6 md:pt-10 space-y-6">
+      <div className="container mx-auto max-w-2xl p-3 md:p-8 pt-4 md:pt-10 space-y-4 md:space-y-6">
         <div className="text-center">
-            <h1 className="text-3xl md:text-4xl font-bold font-headline tracking-tighter">
+            <h1 className="text-2xl md:text-4xl font-bold font-headline tracking-tighter">
                 {dict.onetime.title}
             </h1>
-            <p className="text-muted-foreground mt-2">
+            <p className="text-muted-foreground mt-1 md:mt-2 text-sm md:text-base">
                 {dict.onetime.description}
             </p>
         </div>
@@ -171,16 +171,16 @@ export function OnetimeCompute({ dict }: { dict: any }) {
               <div key={item.id} className="flex items-center gap-2">
                 <Button
                   variant="outline"
-                  className="flex-1 justify-start font-mono"
+                  className="flex-1 justify-start font-mono text-xs md:text-sm px-2 md:px-4 h-9 md:h-10 min-w-0"
                   onClick={() => handleHistoryClick(item)}
                 >
-                  <KeyRound className="mr-2" />
+                  <KeyRound className="mr-1 md:mr-2 h-4 w-4 shrink-0" />
                   <span className="truncate">{item.account}</span>
                 </Button>
                 <Button
                   variant="outline"
                   size="icon"
-                  className="shrink-0 text-red-500 hover:bg-red-500 hover:text-white border-red-500"
+                  className="shrink-0 text-red-500 hover:bg-red-500 hover:text-white border-red-500 h-9 w-9 md:h-10 md:w-10"
                   onClick={(e) => handleDeleteHistory(e, item.id)}
                 >
                   <X className="h-4 w-4" />

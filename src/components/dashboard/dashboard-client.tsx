@@ -317,12 +317,12 @@ export function DashboardClient({ initialAccounts, dict, lang }: DashboardClient
   };
 
   return (
-    <div className="container mx-auto p-4 md:p-8">
-      <div className="flex flex-wrap items-center gap-4 mb-6">
+    <div className="container mx-auto p-3 md:p-8">
+      <div className="flex flex-wrap items-center gap-2 md:gap-4 mb-4 md:mb-6">
         <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center text-2xl md:text-3xl font-bold font-headline cursor-pointer hover:opacity-80 focus:outline-none">
+          <DropdownMenuTrigger className="flex items-center text-xl md:text-3xl font-bold font-headline cursor-pointer hover:opacity-80 focus:outline-none">
             {selectedIssuer === "ALL" ? "ALL" : selectedIssuer}
-            <ChevronDown className="ml-2 h-5 w-5" />
+            <ChevronDown className="ml-1 md:ml-2 h-4 w-4 md:h-5 md:w-5" />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="border-2 shadow-hard min-w-[150px]">
             <DropdownMenuItem onClick={() => setSelectedIssuer("ALL")}>
@@ -340,9 +340,9 @@ export function DashboardClient({ initialAccounts, dict, lang }: DashboardClient
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="h-9 px-3 border-2 ml-2">
-              <Filter className="mr-2 h-4 w-4" />
-              {dict.dialog.tagsLabel}
+            <Button variant="outline" className="h-8 md:h-9 px-2 md:px-3 border-2 text-xs md:text-sm">
+              <Filter className="mr-1 md:mr-2 h-3 w-3 md:h-4 md:w-4" />
+              <span className="hidden xs:inline">{dict.dialog.tagsLabel}</span>
               {selectedTags.length > 0 && (
                 <>
                   <Separator orientation="vertical" className="mx-2 h-4" />
@@ -416,21 +416,21 @@ export function DashboardClient({ initialAccounts, dict, lang }: DashboardClient
         </DropdownMenu>
 
         <div className="relative w-full order-last md:order-none md:flex-1 md:max-w-md lg:max-w-lg">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-2 md:left-3 top-1/2 -translate-y-1/2 h-3 w-3 md:h-4 md:w-4 text-muted-foreground" />
           <Input
             type="text"
             placeholder={dict.dashboard.search}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9 border-2 w-full"
+            className="pl-7 md:pl-9 border-2 w-full h-8 md:h-10 text-sm"
           />
         </div>
           <input type="file" ref={fileInputRef} className="hidden" accept=".csv" onChange={handleImport} />
-          <div className="flex items-center gap-2 ml-auto">
+          <div className="flex items-center gap-1 md:gap-2 ml-auto">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="icon" className="mr-2 border-2">
-                <ArrowUpDown className="h-4 w-4" />
+              <Button variant="outline" size="icon" className="border-2 h-8 w-8 md:h-10 md:w-10">
+                <ArrowUpDown className="h-3 w-3 md:h-4 md:w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -448,30 +448,30 @@ export function DashboardClient({ initialAccounts, dict, lang }: DashboardClient
             <Button
               variant={viewMode === "grid" ? "default" : "ghost"}
               size="icon"
-              className="rounded-none h-9 w-9"
+              className="rounded-none h-8 w-8 md:h-9 md:w-9"
               onClick={() => setViewMode("grid")}
             >
-              <LayoutGrid className="h-4 w-4" />
+              <LayoutGrid className="h-3 w-3 md:h-4 md:w-4" />
             </Button>
             <Button
               variant={viewMode === "compact" ? "default" : "ghost"}
               size="icon"
-              className="rounded-none h-9 w-9"
+              className="rounded-none h-8 w-8 md:h-9 md:w-9"
               onClick={() => setViewMode("compact")}
             >
-              <List className="h-4 w-4" />
+              <List className="h-3 w-3 md:h-4 md:w-4" />
             </Button>
           </div>
           {accounts.length > 0 && (
-            <div className="flex gap-2">
-            <Button onClick={() => setIsDialogOpen(true)} className="rounded-full px-3 sm:px-4">
-              <PlusCircle className="h-4 w-4 sm:mr-2" />
-              <span className="hidden sm:inline">{dict.dashboard.addAccount}</span>
+            <div className="flex gap-1 md:gap-2">
+            <Button onClick={() => setIsDialogOpen(true)} className="rounded-full px-2 sm:px-4 h-8 md:h-10">
+              <PlusCircle className="h-3 w-3 md:h-4 md:w-4 sm:mr-2" />
+              <span className="hidden sm:inline text-sm">{dict.dashboard.addAccount}</span>
             </Button>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="icon" className="rounded-full">
-                    <MoreHorizontal className="h-4 w-4" />
+                  <Button variant="outline" size="icon" className="rounded-full h-8 w-8 md:h-10 md:w-10">
+                    <MoreHorizontal className="h-3 w-3 md:h-4 md:w-4" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
@@ -506,7 +506,7 @@ export function DashboardClient({ initialAccounts, dict, lang }: DashboardClient
         </div>
       ) : selectedIssuer === "ALL" ? (
         // Grouped view when showing all
-        <div className="space-y-8">
+        <div className="space-y-6 md:space-y-8">
           {filteredIssuers.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
               {dict.dashboard.noAccountsFound.replace("{query}", searchQuery)}
@@ -514,13 +514,13 @@ export function DashboardClient({ initialAccounts, dict, lang }: DashboardClient
           ) : (
             filteredIssuers.map((issuer) => (
               <div key={issuer}>
-                <h2 className="text-xl font-bold font-headline text-primary mb-4">{issuer}</h2>
-                <div className={viewMode === "compact" ? "space-y-2" : "grid gap-4 md:grid-cols-2 lg:grid-cols-3"}>
+                <h2 className="text-lg md:text-xl font-bold font-headline text-primary mb-3 md:mb-4">{issuer}</h2>
+                <div className={viewMode === "compact" ? "space-y-2" : "grid gap-3 md:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"}>
                   {filteredGroupedAccounts[issuer]?.map((account) => (
                     <AccountCard key={account.id} account={account} compact={viewMode === "compact"} onEdit={handleEditAccount} dict={dict} />
                   ))}
                 </div>
-                <hr className="mt-6 border-t-2 border-primary/30" />
+                <hr className="mt-4 md:mt-6 border-t-2 border-primary/30" />
               </div>
             ))
           )}

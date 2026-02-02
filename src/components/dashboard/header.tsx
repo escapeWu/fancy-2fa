@@ -37,12 +37,12 @@ export function Header({ dict, lang }: { dict: any; lang: string }) {
 
   return (
     <header className="sticky top-[5px] z-40">
-      <div className="flex h-16 items-center gap-4 text-accent-foreground px-4 md:px-6 bg-background">
-      <Link href={`/${lang}/dashboard`} className="flex items-center gap-2 font-semibold">
-        <Logo className="h-6 w-6 text-primary" />
-        <span className="text-lg font-bold font-headline">{dict.dashboard.title}</span>
+      <div className="flex h-14 md:h-16 items-center gap-2 md:gap-4 text-accent-foreground px-3 md:px-6 bg-background">
+      <Link href={`/${lang}/dashboard`} className="flex items-center gap-1.5 md:gap-2 font-semibold">
+        <Logo className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+        <span className="text-base md:text-lg font-bold font-headline">{dict.dashboard.title}</span>
       </Link>
-      <div className="ml-auto flex items-center gap-4">
+      <div className="ml-auto flex items-center gap-2 md:gap-4">
         <LanguageSwitcher />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

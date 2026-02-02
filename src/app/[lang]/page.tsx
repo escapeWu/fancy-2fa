@@ -11,10 +11,10 @@ export default async function Home({ params }: { params: Promise<{ lang: Locale 
 
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="p-4 flex justify-between items-center border-b-2 text-accent-foreground">
-        <div className="flex items-center gap-2">
-          <Logo className="h-8 w-8 text-primary" />
-          <span className="text-xl font-bold font-headline">{dict.landing.title}</span>
+      <header className="p-3 md:p-4 flex justify-between items-center border-b-2 text-accent-foreground">
+        <div className="flex items-center gap-1.5 md:gap-2">
+          <Logo className="h-6 w-6 md:h-8 md:w-8 text-primary" />
+          <span className="text-lg md:text-xl font-bold font-headline">{dict.landing.title}</span>
         </div>
         <Button asChild variant="secondary" size="sm">
           <Link href={`/${lang}/login`}>{dict.common.login}</Link>

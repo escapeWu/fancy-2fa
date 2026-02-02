@@ -223,7 +223,7 @@ export function AccountCard({ account, compact = false, onEdit, dict }: AccountC
   // Compact mode - single row layout
   if (compact) {
     return (
-      <Card className="flex items-center relative group px-4 py-3 gap-4">
+      <Card className="flex items-center relative group px-3 md:px-4 py-2 md:py-3 gap-2 md:gap-4">
         <div className="absolute top-1/2 -translate-y-1/2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-card shadow-sm border rounded-md p-1 z-10">
           <Button
             variant="ghost"
@@ -257,28 +257,28 @@ export function AccountCard({ account, compact = false, onEdit, dict }: AccountC
           </Button>
         </div>
         <div className="relative shrink-0">
-          <KeyRound className={cn("w-6 h-6 shrink-0", account.share_link ? "text-green-500" : "text-accent")} />
+          <KeyRound className={cn("w-5 h-5 md:w-6 md:h-6 shrink-0", account.share_link ? "text-green-500" : "text-accent")} />
           {account.share_link && (
             <Share2 className="absolute -top-1 -right-1 w-3 h-3 text-green-500" />
           )}
         </div>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-baseline gap-2">
+        <div className="flex-1 min-w-0 overflow-hidden">
+          <div className="flex items-baseline gap-1 md:gap-2 flex-wrap md:flex-nowrap">
             <span
               onClick={handleCopyAccount}
               className={cn(
-                "font-bold truncate cursor-pointer transition-all rounded px-1",
+                "font-bold text-sm md:text-base truncate max-w-[120px] md:max-w-none cursor-pointer transition-all rounded px-1",
                 copiedAccount ? "bg-green-500/20 scale-105" : "hover:bg-muted active:scale-95"
               )}
             >
               {account.account}
             </span>
-            <span className="text-sm text-muted-foreground truncate">{account.issuer}</span>
+            <span className="text-xs md:text-sm text-muted-foreground truncate">{account.issuer}</span>
             {account.remark && (
               <span
                 onClick={handleCopyRemark}
                 className={cn(
-                  "text-sm text-yellow-500 truncate cursor-pointer transition-all rounded px-1",
+                  "text-xs md:text-sm text-yellow-500 truncate cursor-pointer transition-all rounded px-1 hidden sm:inline",
                   copiedRemark ? "bg-green-500/20 scale-105" : "hover:bg-muted active:scale-95"
                 )}
               >
@@ -290,7 +290,7 @@ export function AccountCard({ account, compact = false, onEdit, dict }: AccountC
         <div
           onClick={handleCopy}
           className={cn(
-            "text-2xl font-bold tracking-widest font-mono cursor-pointer transition-all select-none px-2 py-1 rounded",
+            "text-xl md:text-2xl font-bold tracking-widest font-mono cursor-pointer transition-all select-none px-1 md:px-2 py-1 rounded shrink-0",
             copied ? "bg-green-500/20 scale-105" : "hover:bg-muted active:scale-95",
             (!code || code === "------" || code === "Error!") && "pointer-events-none opacity-50"
           )}
@@ -298,8 +298,8 @@ export function AccountCard({ account, compact = false, onEdit, dict }: AccountC
         >
           {code !== "Error!" ? `${code.slice(0, 3)} ${code.slice(3, 6)}` : "Error!"}
         </div>
-        <div className="flex items-center gap-2 shrink-0">
-          <div className="w-16 h-1.5 bg-secondary rounded-full overflow-hidden">
+        <div className="flex items-center gap-1 md:gap-2 shrink-0">
+          <div className="w-10 md:w-16 h-1.5 bg-secondary rounded-full overflow-hidden">
             <div
               className="h-full transition-all duration-1000 ease-linear"
               style={{
@@ -309,7 +309,7 @@ export function AccountCard({ account, compact = false, onEdit, dict }: AccountC
             />
           </div>
           <span
-            className="text-xs font-mono tabular-nums w-6 text-right"
+            className="text-[10px] md:text-xs font-mono tabular-nums w-5 md:w-6 text-right"
             style={{ color: textColor }}
           >
             {remaining}s
@@ -354,18 +354,18 @@ export function AccountCard({ account, compact = false, onEdit, dict }: AccountC
             <X className="h-4 w-4" />
           </Button>
         </div>
-      <CardHeader className="flex-row items-start gap-3 space-y-0 p-4 pb-2 pr-8">
+      <CardHeader className="flex-row items-start gap-2 md:gap-3 space-y-0 p-3 md:p-4 pb-1 md:pb-2 pr-8">
         <div className="relative shrink-0 mt-0.5">
-          <KeyRound className={cn("w-6 h-6", account.share_link ? "text-green-500" : "text-accent")} />
+          <KeyRound className={cn("w-5 h-5 md:w-6 md:h-6", account.share_link ? "text-green-500" : "text-accent")} />
           {account.share_link && (
             <Share2 className="absolute -top-1 -right-1 w-3 h-3 text-green-500" />
           )}
         </div>
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 min-w-0 overflow-hidden">
           <CardTitle
             onClick={handleCopyAccount}
             className={cn(
-              "truncate text-lg cursor-pointer transition-all rounded px-1 inline-block",
+              "truncate text-base md:text-lg cursor-pointer transition-all rounded px-1 inline-block max-w-full",
               copiedAccount ? "bg-green-500/20 scale-105" : "hover:bg-muted active:scale-95"
             )}
           >
@@ -400,7 +400,7 @@ export function AccountCard({ account, compact = false, onEdit, dict }: AccountC
           )}
         </div>
       </CardHeader>
-      <CardContent className="flex items-center justify-center gap-3 p-4 pt-1 pb-3">
+      <CardContent className="flex items-center justify-center gap-2 md:gap-3 p-3 md:p-4 pt-1 pb-2 md:pb-3">
         <p
           onClick={handleCopy}
           className={cn(
@@ -422,7 +422,7 @@ export function AccountCard({ account, compact = false, onEdit, dict }: AccountC
         </span>
       </CardContent>
       {isNonStandard && (
-        <div className="px-4 pb-3">
+        <div className="px-3 md:px-4 pb-2 md:pb-3">
           <Progress
             value={progress}
             aria-label={`${Math.round(progress)}% time remaining`}
