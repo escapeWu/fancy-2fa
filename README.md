@@ -4,29 +4,17 @@
 
 English | [简体中文](./README-zh.md)
 
-A secure, privacy-focused Two-Factor Authentication (2FA) dashboard built with Next.js and Supabase. Manage your TOTP codes, organize accounts with tags, and generate codes via a secure API.
-
-
-
+A secure, privacy-focused Two-Factor Authentication (2FA) dashboard.
 
 ## Features
 
-- 🔐 **Secure 2FA Management**: Store and manage TOTP secrets for multiple accounts.
-- 🏷️ **Tag Organization**: Categorize accounts with custom tags and colors.
-- 🚀 **Modern Dashboard**: Built with Next.js 15, Tailwind CSS, and Radix UI.
 - 📱 **API Access**: Generate TOTP codes programmatically via a secured API endpoint.
-- 🔍 **Search & Sort**: Quickly find accounts with search and sorting capabilities.
-- ☁️ **Supabase Backend**: Reliable data persistence with Row Level Security (RLS).
 - 🔗 **Share Links**: Generate shareable links for individual 2FA codes, allowing temporary access without exposing secrets.
-- 📝 **Account Remarks**: Add custom notes/remarks to accounts for better organization.
-- 📋 **Click to Copy**: Quickly copy verification codes, account names, or remarks with a single click.
+- 📋 **Quick Copy**: Quickly copy verification codes, account names, or remarks with a single click.
 - 📥 **CSV Import/Export**: Bulk import and export accounts via CSV files, including remarks and tags.
+
 <img width="394" height="619" src="https://github.com/user-attachments/assets/7db0971d-8688-430a-9b87-817d2dc1574b" />
 <img width="394" height="619" src="https://github.com/user-attachments/assets/342a70fa-e7f8-4d40-be6d-6dc08bf26f88" />
-## Prerequisites
-
-- Node.js 18+ installed.
-- A Supabase account and project.
 
 ## Getting Started
 
@@ -53,19 +41,9 @@ Edit `.env.local` and configure the following variables:
 1.  Go to your Supabase project's **SQL Editor**.
 2.  Open the `supabase_schema.sql` file located in the root of this project.
 3.  Copy the contents and run them in the Supabase SQL Editor.
-    *   This creates the necessary tables: `users`, `tags`, `accounts`, `account_tags`.
-    *   It sets up Row Level Security (RLS) policies.
-    *   It creates a default admin user.
 
+## API: Generate TOTP Code
 
-## Usage
-
-### Web Dashboard
-1.  Navigate to the login page.
-2.  Enter the `AUTH_SECRET_KEY` you configured in `.env.local`.
-3.  Use the dashboard to add accounts, create tags, and view TOTP codes.
-
-### API: Generate TOTP Code
 You can generate a TOTP code programmatically using the API.
 
 **Endpoint:** `GET /api/totp`
