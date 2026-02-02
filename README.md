@@ -2,6 +2,8 @@
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FescapeWu%2Ffancy-2fa&env=NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY,SUPABASE_SERVICE_ROLE_KEY,AUTH_SECRET_KEY,API_AUTH_TOKEN)
 
+English | [简体中文](./README-zh.md)
+
 A secure, privacy-focused Two-Factor Authentication (2FA) dashboard built with Next.js and Supabase. Manage your TOTP codes, organize accounts with tags, and generate codes via a secure API.
 
 
@@ -15,6 +17,10 @@ A secure, privacy-focused Two-Factor Authentication (2FA) dashboard built with N
 - 📱 **API Access**: Generate TOTP codes programmatically via a secured API endpoint.
 - 🔍 **Search & Sort**: Quickly find accounts with search and sorting capabilities.
 - ☁️ **Supabase Backend**: Reliable data persistence with Row Level Security (RLS).
+- 🔗 **Share Links**: Generate shareable links for individual 2FA codes, allowing temporary access without exposing secrets.
+- 📝 **Account Remarks**: Add custom notes/remarks to accounts for better organization.
+- 📋 **Click to Copy**: Quickly copy verification codes, account names, or remarks with a single click.
+- 📥 **CSV Import/Export**: Bulk import and export accounts via CSV files, including remarks and tags.
 <img width="394" height="619" src="https://github.com/user-attachments/assets/7db0971d-8688-430a-9b87-817d2dc1574b" />
 <img width="394" height="619" src="https://github.com/user-attachments/assets/342a70fa-e7f8-4d40-be6d-6dc08bf26f88" />
 ## Prerequisites
